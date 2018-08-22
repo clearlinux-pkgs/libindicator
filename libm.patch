@@ -1,0 +1,11 @@
+--- libindicator-12.10.1/configure.ac~	2018-08-22 12:13:40.502240870 -0700
++++ libindicator-12.10.1/configure.ac	2018-08-22 12:13:50.606240774 -0700
+@@ -66,7 +66,7 @@
+ AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
+ 
+ LT_LIB_M
+-LIBINDICATOR_LIBS+="$LIBM"
++LIBINDICATOR_LIBS+=" $LIBM"
+ 
+ ##############################
+ # Custom Junk
