@@ -6,7 +6,7 @@
 #
 Name     : libindicator
 Version  : 12.10.1
-Release  : 2
+Release  : 3
 URL      : https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz
 Source0  : https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz
 Source99 : https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz.asc
