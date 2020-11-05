@@ -6,17 +6,17 @@
 #
 Name     : libindicator
 Version  : 12.10.1
-Release  : 3
+Release  : 4
 URL      : https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz
 Source0  : https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz
-Source99 : https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz.asc
+Source1  : https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz.asc
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-3.0
-Requires: libindicator-lib
-Requires: libindicator-bin
-Requires: libindicator-license
-Requires: libindicator-data
+Requires: libindicator-data = %{version}-%{release}
+Requires: libindicator-lib = %{version}-%{release}
+Requires: libindicator-libexec = %{version}-%{release}
+Requires: libindicator-license = %{version}-%{release}
 BuildRequires : automake
 BuildRequires : automake-dev
 BuildRequires : gettext-bin
@@ -32,16 +32,6 @@ Patch1: libm.patch
 %description
 
 
-%package bin
-Summary: bin components for the libindicator package.
-Group: Binaries
-Requires: libindicator-data
-Requires: libindicator-license
-
-%description bin
-bin components for the libindicator package.
-
-
 %package data
 Summary: data components for the libindicator package.
 Group: Data
@@ -53,10 +43,10 @@ data components for the libindicator package.
 %package dev
 Summary: dev components for the libindicator package.
 Group: Development
-Requires: libindicator-lib
-Requires: libindicator-bin
-Requires: libindicator-data
-Provides: libindicator-devel
+Requires: libindicator-lib = %{version}-%{release}
+Requires: libindicator-data = %{version}-%{release}
+Provides: libindicator-devel = %{version}-%{release}
+Requires: libindicator = %{version}-%{release}
 
 %description dev
 dev components for the libindicator package.
@@ -65,11 +55,21 @@ dev components for the libindicator package.
 %package lib
 Summary: lib components for the libindicator package.
 Group: Libraries
-Requires: libindicator-data
-Requires: libindicator-license
+Requires: libindicator-data = %{version}-%{release}
+Requires: libindicator-libexec = %{version}-%{release}
+Requires: libindicator-license = %{version}-%{release}
 
 %description lib
 lib components for the libindicator package.
+
+
+%package libexec
+Summary: libexec components for the libindicator package.
+Group: Default
+Requires: libindicator-license = %{version}-%{release}
+
+%description libexec
+libexec components for the libindicator package.
 
 
 %package license
@@ -82,37 +82,42 @@ license components for the libindicator package.
 
 %prep
 %setup -q -n libindicator-12.10.1
+cd %{_builddir}/libindicator-12.10.1
 %patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1534965361
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1604611474
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %reconfigure --disable-static
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1534965361
+export SOURCE_DATE_EPOCH=1604611474
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/libindicator
-cp COPYING %{buildroot}/usr/share/doc/libindicator/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/libindicator
+cp %{_builddir}/libindicator-12.10.1/COPYING %{buildroot}/usr/share/package-licenses/libindicator/8624bcdae55baeef00cd11d5dfcfa60f68710a02
 %make_install
 
 %files
 %defattr(-,root,root,-)
-
-%files bin
-%defattr(-,root,root,-)
-/usr/libexec/indicator-loader3
 
 %files data
 %defattr(-,root,root,-)
@@ -140,6 +145,10 @@ cp COPYING %{buildroot}/usr/share/doc/libindicator/COPYING
 /usr/lib64/libindicator3.so.7
 /usr/lib64/libindicator3.so.7.0.0
 
-%files license
+%files libexec
 %defattr(-,root,root,-)
-/usr/share/doc/libindicator/COPYING
+/usr/libexec/indicator-loader3
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/libindicator/8624bcdae55baeef00cd11d5dfcfa60f68710a02
